@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -78,6 +79,9 @@ export default function SettingsModal({
       <DialogContent className="sm:max-w-md" data-testid="modal-settings">
         <DialogHeader>
           <DialogTitle>Timer Settings</DialogTitle>
+          <DialogDescription>
+            Customize your pomodoro timer durations and preferences.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6">
