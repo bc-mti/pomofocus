@@ -28,7 +28,7 @@ export default function ThemeToggle() {
       size="icon"
       onClick={toggleTheme}
       data-testid="button-theme-toggle"
-      className="fixed top-4 right-4 z-10 h-10 w-10 sm:h-9 sm:w-9"
+      className="fixed top-4 right-4 z-10 h-11 w-11 sm:h-9 sm:w-9"
     >
       {theme === "light" ? (
         <Moon className="h-4 w-4" />

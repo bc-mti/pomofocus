@@ -278,7 +278,7 @@ export default function PomodoroTimer() {
       <Button
         variant="outline"
         size="icon"
-        className="fixed top-4 left-4 z-10 h-10 w-10 sm:h-9 sm:w-9"
+        className="fixed top-4 left-4 z-10 h-11 w-11 sm:h-9 sm:w-9"
         asChild
         data-testid="button-statistics"
       >

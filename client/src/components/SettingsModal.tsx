@@ -94,10 +94,11 @@ export default function SettingsModal({
                   id="work-minutes"
                   type="number"
                   min="1"
-                  max="60"
+                  max="120"
                   value={localWorkMinutes}
                   onChange={(e) => setLocalWorkMinutes(parseInt(e.target.value) || 25)}
                   data-testid="input-work-minutes"
+                  className="h-11"
                 />
               </div>
 
@@ -111,6 +112,7 @@ export default function SettingsModal({
                   value={localBreakMinutes}
                   onChange={(e) => setLocalBreakMinutes(parseInt(e.target.value) || 5)}
                   data-testid="input-break-minutes"
+                  className="h-11"
                 />
               </div>
 
@@ -124,6 +126,7 @@ export default function SettingsModal({
                   value={localLongBreakMinutes}
                   onChange={(e) => setLocalLongBreakMinutes(parseInt(e.target.value) || 15)}
                   data-testid="input-long-break-minutes"
+                  className="h-11"
                 />
               </div>
 
@@ -137,6 +140,7 @@ export default function SettingsModal({
                   value={localDailyGoal}
                   onChange={(e) => setLocalDailyGoal(parseInt(e.target.value) || 8)}
                   data-testid="input-daily-goal"
+                  className="h-11"
                 />
               </div>
             </CardContent>
