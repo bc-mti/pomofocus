@@ -76,18 +76,18 @@ export default function SettingsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md" data-testid="modal-settings">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto" data-testid="modal-settings">
         <DialogHeader>
-          <DialogTitle>Timer Settings</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Timer Settings</DialogTitle>
+          <DialogDescription className="text-sm">
             Customize your pomodoro timer durations and preferences.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Timer Duration Settings */}
           <Card>
-            <CardContent className="pt-6 space-y-4">
+            <CardContent className="pt-4 sm:pt-6 space-y-3 sm:space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="work-minutes">Focus Time (minutes)</Label>
                 <Input
@@ -167,25 +167,28 @@ export default function SettingsModal({
           </Card>
 
           {/* Action Buttons */}
-          <div className="flex justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
             <Button 
               variant="outline" 
               onClick={handleReset}
               data-testid="button-reset-settings"
+              className="h-11 sm:w-auto"
             >
               Reset to Defaults
             </Button>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 variant="outline" 
                 onClick={onClose}
                 data-testid="button-cancel"
+                className="flex-1 sm:flex-none h-11"
               >
                 Cancel
               </Button>
               <Button 
                 onClick={handleSave}
                 data-testid="button-save-settings"
+                className="flex-1 sm:flex-none h-11"
               >
                 Save Changes
               </Button>
