@@ -1,5 +1,11 @@
-import { type User, type InsertUser, type PomodoroSession, type InsertPomodoroSession } from "@shared/schema";
+import { type User, type InsertUser, type PomodoroSession, type InsertPomodoroSession, users, pomodoroSessions } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import { eq, and, gte, lte, desc } from "drizzle-orm";
+
+const sql = neon(process.env.DATABASE_URL!);
+const db = drizzle(sql);
 
 // modify the interface with any CRUD methods
 // you might need
@@ -17,54 +23,46 @@ export interface IStorage {
   getPomodoroSessionsThisWeek(): Promise<PomodoroSession[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private pomodoroSessions: Map<string, PomodoroSession>;
-
-  constructor() {
-    this.users = new Map();
-    this.pomodoroSessions = new Map();
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
   }
 
   async createPomodoroSession(insertSession: InsertPomodoroSession): Promise<PomodoroSession> {
-    const id = randomUUID();
-    const session: PomodoroSession = {
+    const sessionData = {
       ...insertSession,
-      id,
-      completedAt: new Date(),
       wasCompleted: insertSession.wasCompleted ?? true,
     };
-    this.pomodoroSessions.set(id, session);
-    return session;
+    const result = await db.insert(pomodoroSessions).values(sessionData).returning();
+    return result[0];
   }
 
   async getPomodoroSessionsByDateRange(startDate: string, endDate: string): Promise<PomodoroSession[]> {
-    return Array.from(this.pomodoroSessions.values())
-      .filter(session => session.date >= startDate && session.date <= endDate)
-      .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+    return await db.select()
+      .from(pomodoroSessions)
+      .where(and(
+        gte(pomodoroSessions.date, startDate),
+        lte(pomodoroSessions.date, endDate)
+      ))
+      .orderBy(desc(pomodoroSessions.completedAt));
   }
 
   async getPomodoroSessionsByDate(date: string): Promise<PomodoroSession[]> {
-    return Array.from(this.pomodoroSessions.values())
-      .filter(session => session.date === date)
-      .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+    return await db.select()
+      .from(pomodoroSessions)
+      .where(eq(pomodoroSessions.date, date))
+      .orderBy(desc(pomodoroSessions.completedAt));
   }
 
   async getPomodoroSessionsLast30Days(): Promise<PomodoroSession[]> {
@@ -85,4 +83,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

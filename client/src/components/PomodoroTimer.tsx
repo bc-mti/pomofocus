@@ -6,6 +6,10 @@ import SettingsModal from "./SettingsModal";
 import ThemeToggle from "./ThemeToggle";
 import KeyboardShortcuts from "./KeyboardShortcuts";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { BarChart3 } from "lucide-react";
+import { Link } from "wouter";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 const TIMER_STATES = {
   WORK: 'work',
@@ -161,7 +165,28 @@ export default function PomodoroTimer() {
     }
   }, [settings.soundEnabled]);
 
-  const handleTimerComplete = () => {
+  const handleTimerComplete = async () => {
+    // Save completed session to database
+    try {
+      const sessionData = {
+        sessionType: currentState,
+        duration: currentState === TIMER_STATES.WORK ? settings.workMinutes : 
+                  currentState === TIMER_STATES.BREAK ? settings.breakMinutes : 
+                  settings.longBreakMinutes,
+        wasCompleted: true,
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      await apiRequest('POST', '/api/sessions', sessionData);
+
+      // Invalidate and refetch session data
+      queryClient.invalidateQueries({ queryKey: ['/api/sessions/today'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sessions/week'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sessions/month'] });
+    } catch (error) {
+      console.error('Failed to save session:', error);
+    }
+
     if (currentState === TIMER_STATES.WORK) {
       // Work session completed
       setCompletedSessions(prev => prev + 1);
@@ -248,6 +273,19 @@ export default function PomodoroTimer() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <ThemeToggle />
+      
+      {/* Statistics Button */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed top-4 left-4 z-10"
+        asChild
+        data-testid="button-statistics"
+      >
+        <Link href="/statistics">
+          <BarChart3 className="h-4 w-4" />
+        </Link>
+      </Button>
       
       <div className="w-full max-w-md space-y-8">
         {/* Main Timer Display */}
