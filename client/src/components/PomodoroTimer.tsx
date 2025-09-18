@@ -4,6 +4,7 @@ import TimerControls from "./TimerControls";
 import SessionTracker from "./SessionTracker";
 import SettingsModal from "./SettingsModal";
 import ThemeToggle from "./ThemeToggle";
+import KeyboardShortcuts from "./KeyboardShortcuts";
 import { useToast } from "@/hooks/use-toast";
 
 const TIMER_STATES = {
@@ -81,40 +82,86 @@ export default function PomodoroTimer() {
     
     if (isActive && timeLeft > 0) {
       interval = setInterval(() => {
-        setTimeLeft(time => time - 1);
+        setTimeLeft(time => {
+          if (time <= 1) {
+            setIsActive(false);
+            return 0;
+          }
+          return time - 1;
+        });
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && !isActive) {
       handleTimerComplete();
     }
     
     return () => clearInterval(interval);
   }, [isActive, timeLeft]);
 
-  // Audio notification
-  const playNotification = useCallback(() => {
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === 'Space' && !showSettings) {
+        event.preventDefault();
+        if (isActive) {
+          handlePause();
+        } else {
+          handleStart();
+        }
+      }
+      if (event.code === 'KeyR' && !showSettings) {
+        event.preventDefault();
+        handleReset();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isActive, showSettings]);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  // Audio and browser notification
+  const playNotification = useCallback((message: string, isWork: boolean) => {
+    // Audio notification
     if (settings.soundEnabled) {
-      // Create a simple beep sound
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      
-      oscillator.connect(gain);
-      gain.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 800;
-      oscillator.type = 'sine';
-      gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        oscillator.frequency.value = isWork ? 600 : 800; // Different tones for work/break
+        oscillator.type = 'sine';
+        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      } catch (error) {
+        console.log('Audio notification failed:', error);
+      }
+    }
+
+    // Browser notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Pomodoro Timer', {
+        body: message,
+        icon: '/favicon.ico', // Will fallback gracefully if not found
+        badge: '/favicon.ico',
+        tag: 'pomodoro-timer', // Replace previous notifications
+        requireInteraction: false
+      });
     }
   }, [settings.soundEnabled]);
 
   const handleTimerComplete = () => {
-    setIsActive(false);
-    playNotification();
-    
     if (currentState === TIMER_STATES.WORK) {
       // Work session completed
       setCompletedSessions(prev => prev + 1);
@@ -124,6 +171,9 @@ export default function PomodoroTimer() {
       const nextState = (workSessionsCompleted + 1) % 4 === 0 
         ? TIMER_STATES.LONG_BREAK 
         : TIMER_STATES.BREAK;
+      
+      const breakMessage = `Work session complete! Time for a ${nextState === TIMER_STATES.LONG_BREAK ? 'long' : 'short'} break.`;
+      playNotification(breakMessage, false);
       
       setCurrentState(nextState);
       setTimeLeft(nextState === TIMER_STATES.LONG_BREAK 
@@ -137,6 +187,9 @@ export default function PomodoroTimer() {
       });
     } else {
       // Break completed
+      const workMessage = "Break time's over! Ready for another focus session?";
+      playNotification(workMessage, true);
+      
       setCurrentState(TIMER_STATES.WORK);
       setTimeLeft(settings.workMinutes * 60);
       
@@ -219,6 +272,9 @@ export default function PomodoroTimer() {
           completedSessions={completedSessions}
           dailyGoal={settings.dailyGoal}
         />
+        
+        {/* Keyboard Shortcuts */}
+        <KeyboardShortcuts />
       </div>
       
       {/* Settings Modal */}
