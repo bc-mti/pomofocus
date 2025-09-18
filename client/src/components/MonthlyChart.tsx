@@ -72,37 +72,37 @@ export default function MonthlyChart({ sessions }: MonthlyChartProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Last 30 Days</CardTitle>
-          <div className="flex gap-2">
-            <Badge variant="secondary">{totalSessions} sessions</Badge>
-            <Badge variant="outline">{totalHours}h total</Badge>
+          <CardTitle className="text-base sm:text-lg">Last 30 Days</CardTitle>
+          <div className="flex gap-1 sm:gap-2">
+            <Badge variant="secondary" className="text-xs">{totalSessions} sessions</Badge>
+            <Badge variant="outline" className="text-xs hidden sm:inline-flex">{totalHours}h total</Badge>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {/* Summary Stats */}
-          <div className="grid grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-primary">{totalSessions}</div>
+              <div className="text-lg sm:text-2xl font-bold text-primary">{totalSessions}</div>
               <div className="text-xs text-muted-foreground">Total Sessions</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-chart-2">{totalHours}</div>
+              <div className="text-lg sm:text-2xl font-bold text-chart-2">{totalHours}</div>
               <div className="text-xs text-muted-foreground">Total Hours</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-chart-3">{avgPerDay}</div>
+              <div className="text-lg sm:text-2xl font-bold text-chart-3">{avgPerDay}</div>
               <div className="text-xs text-muted-foreground">Avg/Day</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-chart-4">{streak}</div>
+              <div className="text-lg sm:text-2xl font-bold text-chart-4">{streak}</div>
               <div className="text-xs text-muted-foreground">Day Streak</div>
             </div>
           </div>
 
           {/* Chart */}
-          <div className="h-64">
+          <div className="h-48 sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={movingAverage} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -112,7 +112,7 @@ export default function MonthlyChart({ sessions }: MonthlyChartProps) {
                   tickLine={false}
                   className="text-xs fill-muted-foreground"
                   interval="preserveStartEnd"
-                  tick={{ fontSize: 10 }}
+                  tick={{ fontSize: 9 }}
                 />
                 <YAxis 
                   axisLine={false}
@@ -141,10 +141,10 @@ export default function MonthlyChart({ sessions }: MonthlyChartProps) {
           </div>
 
           {/* Performance Insights */}
-          <div className="text-sm text-muted-foreground space-y-1">
+          <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
             <p>• Best day: {getBestDay(monthData)} sessions</p>
             <p>• Current streak: {streak} days with at least 1 session</p>
-            <p>• Most productive time tracked over last 30 days</p>
+            <p className="hidden sm:block">• Most productive time tracked over last 30 days</p>
           </div>
         </div>
       </CardContent>

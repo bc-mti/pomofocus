@@ -112,21 +112,21 @@ export default function ProductivityInsights({ sessions }: ProductivityInsightsP
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Target className="h-5 w-5" />
+        <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+          <Target className="h-4 w-4 sm:h-5 sm:w-5" />
           Productivity Insights
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Key Metrics Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {insights.map((insight, index) => (
               <div key={index} className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <insight.icon className={`h-5 w-5 ${insight.color}`} />
+                <div className="flex items-center justify-center mb-1 sm:mb-2">
+                  <insight.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${insight.color}`} />
                 </div>
-                <div className={`text-xl font-bold ${insight.color}`}>
+                <div className={`text-lg sm:text-xl font-bold ${insight.color}`}>
                   {insight.value}
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -137,11 +137,11 @@ export default function ProductivityInsights({ sessions }: ProductivityInsightsP
           </div>
 
           {/* Progress Sections */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Today's Goal Progress</span>
-                <Badge variant={goalProgress >= 100 ? "default" : "secondary"}>
+                <span className="text-xs sm:text-sm font-medium">Today's Goal Progress</span>
+                <Badge variant={goalProgress >= 100 ? "default" : "secondary"} className="text-xs">
                   {todaySessions.length}/{idealDaily}
                 </Badge>
               </div>
@@ -153,8 +153,8 @@ export default function ProductivityInsights({ sessions }: ProductivityInsightsP
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">30-Day Consistency</span>
-                <Badge variant={consistencyPercentage >= 70 ? "default" : "secondary"}>
+                <span className="text-xs sm:text-sm font-medium">30-Day Consistency</span>
+                <Badge variant={consistencyPercentage >= 70 ? "default" : "secondary"} className="text-xs">
                   {consistencyPercentage}%
                 </Badge>
               </div>
@@ -169,17 +169,17 @@ export default function ProductivityInsights({ sessions }: ProductivityInsightsP
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-3 gap-4 text-center border-t pt-4">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 text-center border-t pt-3 sm:pt-4">
             <div>
-              <div className="text-lg font-bold text-primary">{recentSessions.length}</div>
+              <div className="text-base sm:text-lg font-bold text-primary">{recentSessions.length}</div>
               <div className="text-xs text-muted-foreground">Sessions (30d)</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-chart-2">{totalHours}h</div>
+              <div className="text-base sm:text-lg font-bold text-chart-2">{totalHours}h</div>
               <div className="text-xs text-muted-foreground">Total Focus</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-chart-3">{consistencyPercentage}%</div>
+              <div className="text-base sm:text-lg font-bold text-chart-3">{consistencyPercentage}%</div>
               <div className="text-xs text-muted-foreground">Consistency</div>
             </div>
           </div>
