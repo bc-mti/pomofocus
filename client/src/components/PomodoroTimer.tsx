@@ -271,14 +271,14 @@ export default function PomodoroTimer() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6">
       <ThemeToggle />
       
       {/* Statistics Button */}
       <Button
         variant="outline"
         size="icon"
-        className="fixed top-4 left-4 z-10"
+        className="fixed top-4 left-4 z-10 h-10 w-10 sm:h-9 sm:w-9"
         asChild
         data-testid="button-statistics"
       >
@@ -287,7 +287,7 @@ export default function PomodoroTimer() {
         </Link>
       </Button>
       
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Main Timer Display */}
         <TimerDisplay
           timeLeft={timeLeft}

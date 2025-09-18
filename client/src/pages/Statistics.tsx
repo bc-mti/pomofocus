@@ -48,18 +48,22 @@ export default function Statistics() {
       <div className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" asChild data-testid="button-back">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <Button variant="ghost" size="icon" asChild data-testid="button-back" className="h-10 w-10 flex-shrink-0">
                 <Link href="/">
                   <ArrowLeft className="h-4 w-4" />
                 </Link>
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-card-foreground">Productivity Statistics</h1>
-                <p className="text-sm text-muted-foreground">Track your focus sessions and productivity trends</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-card-foreground truncate">
+                  Productivity Statistics
+                </h1>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                  Track your focus sessions and productivity trends
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 hidden sm:flex">
               <BarChart3 className="h-5 w-5 text-primary" />
               <span className="text-sm font-medium">Analytics Dashboard</span>
             </div>
@@ -68,22 +72,22 @@ export default function Statistics() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto p-4 space-y-6">
+      <div className="max-w-6xl mx-auto p-4 space-y-4 sm:space-y-6">
         {monthSessions.length === 0 ? (
           // Empty State
-          <Card className="text-center py-12">
+          <Card className="text-center py-8 sm:py-12">
             <CardContent>
               <div className="space-y-4">
-                <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
-                  <TrendingUp className="h-8 w-8 text-muted-foreground" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">No Data Yet</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="text-base sm:text-lg font-semibold">No Data Yet</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground px-4">
                     Complete some pomodoro sessions to see your productivity statistics.
                   </p>
                 </div>
-                <Button asChild>
+                <Button asChild className="h-11 px-6">
                   <Link href="/">Start Your First Session</Link>
                 </Button>
               </div>
@@ -91,21 +95,21 @@ export default function Statistics() {
           </Card>
         ) : (
           // Dashboard with Charts
-          <div className="grid gap-6">
+          <div className="grid gap-4 sm:gap-6">
             {/* Top Row - Insights */}
             <ProductivityInsights sessions={monthSessions} />
             
             {/* Middle Row - Charts */}
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
               <WeeklyChart sessions={monthSessions} />
               <MonthlyChart sessions={monthSessions} />
             </div>
 
             {/* Bottom Row - Additional Stats */}
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base flex items-center gap-2">
+                  <CardTitle className="text-sm sm:text-base flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     Session Types
                   </CardTitle>
@@ -133,7 +137,7 @@ export default function Statistics() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Completion Rate</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">Completion Rate</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -147,8 +151,8 @@ export default function Statistics() {
                       return (
                         <>
                           <div className="text-center">
-                            <div className="text-3xl font-bold text-primary">{completionRate}%</div>
-                            <div className="text-sm text-muted-foreground">Sessions completed</div>
+                            <div className="text-2xl sm:text-3xl font-bold text-primary">{completionRate}%</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground">Sessions completed</div>
                           </div>
                           <div className="text-xs text-center text-muted-foreground">
                             {completedWork.length} of {workSessions.length} work sessions finished
@@ -160,12 +164,12 @@ export default function Statistics() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="sm:col-span-2 lg:col-span-1">
                 <CardHeader>
-                  <CardTitle className="text-base">Quick Actions</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button asChild className="w-full" variant="outline">
+                  <Button asChild className="w-full h-11" variant="outline">
                     <Link href="/">Back to Timer</Link>
                   </Button>
                   <div className="text-xs text-muted-foreground text-center">
