@@ -271,23 +271,27 @@ export default function PomodoroTimer() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6">
-      <ThemeToggle />
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="flex items-center justify-between p-4 sm:p-6">
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-11 w-11 sm:h-9 sm:w-9"
+          asChild
+          data-testid="button-statistics"
+        >
+          <Link href="/statistics">
+            <BarChart3 className="h-4 w-4" />
+          </Link>
+        </Button>
+        
+        <ThemeToggle />
+      </header>
       
-      {/* Statistics Button */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="fixed top-4 left-4 z-10 h-11 w-11 sm:h-9 sm:w-9"
-        asChild
-        data-testid="button-statistics"
-      >
-        <Link href="/statistics">
-          <BarChart3 className="h-4 w-4" />
-        </Link>
-      </Button>
-      
-      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 pt-0">
+        <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Main Timer Display */}
         <TimerDisplay
           timeLeft={timeLeft}
@@ -313,6 +317,7 @@ export default function PomodoroTimer() {
         
         {/* Keyboard Shortcuts */}
         <KeyboardShortcuts />
+        </div>
       </div>
       
       {/* Settings Modal */}
